@@ -64,9 +64,10 @@ def index():
                         return 'error, request ip {0}'.format(request_ip), 403
 
             if request.headers.get('X-GitHub-Event') == "ping":
-                return json.dumps({'msg': 'Hi!'})
+                return json.dumps({'msg': 'Hello, I received a ping !'})
+
             if request.headers.get('X-GitHub-Event') != "push":
-                return json.dumps({'msg': "wrong event type"})
+                return json.dumps({'msg': "wrong event type"}), 403
 
             repos = json.loads(io.open(REPOS_JSON_PATH, 'r').read())
 
@@ -76,19 +77,22 @@ def index():
                 'owner': payload['repository']['owner']['name'],
             }
 
+            # repo name
+            repo_name = '{owner}/{name}/branch:{branch}'.format(**repo_meta)
+
             # Try to match on branch as configured in repos.json
             match = re.match(r"refs/heads/(?P<branch>.*)", payload['ref'])
             if match:
                 repo_meta['branch'] = match.groupdict()['branch']
-                repo = repos.get(
-                    '{owner}/{name}/branch:{branch}'.format(**repo_meta), None)
+                repo = repos.get(repo_name, None)
 
                 # Fallback to plain owner/name lookup
                 if not repo:
-                    repo = repos.get('{owner}/{name}'.format(**repo_meta), None)
+                    repo_name = '{owner}/{name}'.format(**repo_meta)
+                    repo = repos.get(repo_name, None)
 
             if not repo:
-                return 'not found target repo !', 404
+                return 'not found target repo ! [repo name]: {0}'.format(repo_name), 404
 
             if repo.get('path', None):
                 # Check if POST request signature is valid
@@ -102,11 +106,15 @@ def index():
                         return 'error: check sum failed !', 403
 
             if repo.get('action', None):
+                log_txt = []
                 for action in repo['action']:
-                    subp = subprocess.Popen(action, cwd=repo.get('path', '.'))
-                    subp.wait()
+                    subp = subprocess.Popen(action, cwd=repo.get('path', '.'), 
+                        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    stdout, stderr = subp.communicate()
+                    log_txt.append('[{0}]\n{1}\n{2}'.format(repo_name, stdout, stderr))
+                return '\n\n'.join(log_txt)
 
-            return 'done !'
+            return 'nothing to do !'
 
     # goto error
     except Exception as err:
