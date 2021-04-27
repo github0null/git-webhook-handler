@@ -79,13 +79,14 @@ def index():
             }
 
             # repo name
-            repo_name = '{owner}/{name}/branch:{branch}'.format(**repo_meta)
+            repo_name = 'none'
 
             # Try to match on branch as configured in repos.json
             match = re.match(r"refs/heads/(?P<branch>.*)", payload['ref'])
             if match:
                 try:
                     repo_meta['branch'] = match.groupdict()['branch']
+                    repo_name = '{owner}/{name}/branch:{branch}'.format(**repo_meta)
                     repo = repos.get(repo_name, None)
                 except Exception as err:
                     pass
