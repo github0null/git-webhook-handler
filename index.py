@@ -113,8 +113,8 @@ def index():
             if repo.get('action', None):
                 log_txt = []
                 for action in repo['action']:
-                    subp = subprocess.Popen(action, cwd=repo.get('path', '.'), 
-                        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    subp = subprocess.Popen(action, cwd=repo.get('path', '.'),
+                        stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding='utf8')
                     stdout, stderr = subp.communicate()
                     log_txt.append('[{0}]\n{1}\n{2}'.format(repo_name, stdout, stderr))
                 return '\n\n'.join(log_txt)
