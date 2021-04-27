@@ -83,13 +83,16 @@ def index():
             # Try to match on branch as configured in repos.json
             match = re.match(r"refs/heads/(?P<branch>.*)", payload['ref'])
             if match:
-                repo_meta['branch'] = match.groupdict()['branch']
-                repo = repos.get(repo_name, None)
-
-                # Fallback to plain owner/name lookup
-                if not repo:
-                    repo_name = '{owner}/{name}'.format(**repo_meta)
+                try:
+                    repo_meta['branch'] = match.groupdict()['branch']
                     repo = repos.get(repo_name, None)
+                except:
+                    pass
+
+            # Fallback to plain owner/name lookup
+            if not repo:
+                repo_name = '{owner}/{name}'.format(**repo_meta)
+                repo = repos.get(repo_name, None)
 
             if not repo:
                 return 'not found target repo ! [repo name]: {0}'.format(repo_name), 404
