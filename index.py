@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import io
 import os
 import re
@@ -12,20 +12,10 @@ import traceback
 from hashlib import sha1
 from flask import Flask, request, abort
 
-"""
-Conditionally import ProxyFix from werkzeug if the USE_PROXYFIX environment
-variable is set to true.  If you intend to import this as a module in your own
-code, use os.environ to set the environment variable before importing this as a
-module.
 
-.. code:: python
-
-    os.environ['USE_PROXYFIX'] = 'true'
-    import flask-github-webhook-handler.index as handler
-
-"""
-if os.environ.get('USE_PROXYFIX', None) == 'true':
-    from werkzeug.contrib.fixers import ProxyFix
+# Check if python version is less than 3
+if sys.version_info.major < 3:
+    raise Exception('Sorry !, We need python3 !')
 
 app = Flask(__name__)
 app.debug = os.environ.get('DEBUG') == 'true'
@@ -33,7 +23,6 @@ app.debug = os.environ.get('DEBUG') == 'true'
 # The repos.json file should be readable by the user running the Flask app,
 # and the absolute path should be given by this environment variable.
 REPOS_JSON_PATH = os.environ['REPOS_JSON_PATH']
-
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
@@ -107,7 +96,7 @@ def index():
                     if type(key) == str:
                         key = key.encode()
                     mac = hmac.new(key, msg=request.data, digestmod=sha1)
-                    if not compare_digest(mac.hexdigest(), signature):
+                    if not hmac.compare_digest(mac.hexdigest(), signature):
                         return 'error: check signature failed !', 403
 
             if repo.get('action', None):
@@ -125,31 +114,6 @@ def index():
     except Exception as err:
 
         return 'error: {0}\n{1}'.format(repr(err), traceback.format_exc()), 500
-    
-
-# Check if python version is less than 2.7.7
-if sys.version_info < (2, 7, 7):
-    # http://blog.turret.io/hmac-in-go-python-ruby-php-and-nodejs/
-    def compare_digest(a, b):
-        """
-        ** From Django source **
-
-        Run a constant time comparison against two strings
-
-        Returns true if a and b are equal.
-
-        a and b must both be the same length, or False is
-        returned immediately
-        """
-        if len(a) != len(b):
-            return False
-
-        result = 0
-        for ch_a, ch_b in zip(a, b):
-            result |= ord(ch_a) ^ ord(ch_b)
-        return result == 0
-else:
-    compare_digest = hmac.compare_digest
 
 if __name__ == "__main__":
     
@@ -157,8 +121,5 @@ if __name__ == "__main__":
         port_number = int(sys.argv[1])
     except:
         port_number = 80
-
-    if os.environ.get('USE_PROXYFIX', None) == 'true':
-        app.wsgi_app = ProxyFix(app.wsgi_app)
 
     app.run(host='0.0.0.0', port=port_number)
