@@ -8,6 +8,7 @@ import subprocess
 import requests
 import ipaddress
 import hmac
+import traceback
 from hashlib import sha1
 from flask import Flask, request, abort
 
@@ -86,7 +87,7 @@ def index():
                 try:
                     repo_meta['branch'] = match.groupdict()['branch']
                     repo = repos.get(repo_name, None)
-                except:
+                except Exception as err:
                     pass
 
             # Fallback to plain owner/name lookup
@@ -122,7 +123,7 @@ def index():
     # goto error
     except Exception as err:
 
-        return 'error: {0}'.format(err), 500
+        return 'error: {0}\n{1}'.format(repr(err), traceback.format_exc()), 500
     
 
 # Check if python version is less than 2.7.7
