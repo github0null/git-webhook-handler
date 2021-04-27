@@ -108,7 +108,7 @@ def index():
                         key = key.encode()
                     mac = hmac.new(key, msg=request.data, digestmod=sha1)
                     if not compare_digest(mac.hexdigest(), signature):
-                        return 'error: check sum failed !', 403
+                        return 'error: check signature failed !', 403
 
             if repo.get('action', None):
                 log_txt = []
