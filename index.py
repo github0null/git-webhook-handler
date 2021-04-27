@@ -50,7 +50,7 @@ def index():
 
                 # If GHE_ADDRESS is specified, use it as the hook_blocks.
                 if os.environ.get('GHE_ADDRESS', None):
-                    hook_blocks = [unicode(os.environ.get('GHE_ADDRESS'))]
+                    hook_blocks = [str(os.environ.get('GHE_ADDRESS'))]
                 # Otherwise get the hook address blocks from the API.
                 else:
                     hook_blocks = requests.get('https://api.github.com/meta').json()['hooks']
@@ -61,7 +61,7 @@ def index():
                         break  # the remote_addr is within the network range of github.
                 else:
                     if str(request_ip) != '127.0.0.1':
-                        abort(403)
+                        return 'error, request ip {0}'.format(request_ip), 403
 
             if request.headers.get('X-GitHub-Event') == "ping":
                 return json.dumps({'msg': 'Hi!'})
@@ -88,19 +88,18 @@ def index():
                     repo = repos.get('{owner}/{name}'.format(**repo_meta), None)
 
             if not repo:
-                return 'not found target repo !'
+                return 'not found target repo !', 404
 
             if repo.get('path', None):
                 # Check if POST request signature is valid
                 key = repo.get('key', None)
                 if key:
-                    signature = request.headers.get('X-Hub-Signature').split(
-                        '=')[1]
-                    if type(key) == unicode:
+                    signature = request.headers.get('X-Hub-Signature').split('=')[1]
+                    if type(key) == str:
                         key = key.encode()
                     mac = hmac.new(key, msg=request.data, digestmod=sha1)
                     if not compare_digest(mac.hexdigest(), signature):
-                        abort(403)
+                        return 'error: check sum failed !', 403
 
             if repo.get('action', None):
                 for action in repo['action']:
@@ -112,7 +111,7 @@ def index():
     # goto error
     except Exception as err:
 
-        return 'error: {0}'.format(err)
+        return 'error: {0}'.format(err), 500
     
 
 # Check if python version is less than 2.7.7
