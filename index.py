@@ -12,7 +12,6 @@ import traceback
 from hashlib import sha1
 from flask import Flask, request, abort
 
-
 # Check if python version is less than 3
 if sys.version_info.major < 3:
     raise Exception('Sorry !, We need python3 !')
@@ -36,7 +35,7 @@ def index():
             request_ip = ipaddress.ip_address(u'{0}'.format(request.remote_addr))
 
             # If VALIDATE_SOURCEIP is set to false, do not validate source IP
-            if os.environ.get('VALIDATE_SOURCEIP', None) != 'false':
+            if os.environ.get('VALIDATE_SOURCEIP', None) == 'true':
 
                 # If GHE_ADDRESS is specified, use it as the hook_blocks.
                 if os.environ.get('GHE_ADDRESS', None):
