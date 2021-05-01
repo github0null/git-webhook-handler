@@ -3,13 +3,15 @@ NOTE
 
 **Need Python3**
 
+***
+
 Flask webhook for Github
 ########################
 A very simple github post-receive web hook handler that executes per default a
 pull uppon receiving. The executed action is configurable per repository.
 
 It will also verify that the POST request originated from github.com or a
-defined GitHub Enterprise server (**default is closeed**). Additionally will ensure that it has a valid
+defined GitHub Enterprise server (**default is closed**). Additionally will ensure that it has a valid
 signature (only when the ``key`` setting is properly configured).
 
 Gettings started
