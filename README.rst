@@ -1,12 +1,7 @@
 NOTE
 ####
 
-I do not maintain this project and it should only be used as an example.
-
-The following might be a better implrementation: 
-
-- https://github.com/carlos-jenkins/python-github-webhooks
-- https://github.com/bloomberg/python-github-webhook
+**Need Python3**
 
 Flask webhook for Github
 ########################
@@ -79,13 +74,6 @@ Start the server with root privileges, if required, while preserving existing en
 .. code-block:: console
 
     sudo -E python index.py 80
-
-Start the server behind a proxy (see:
-http://flask.pocoo.org/docs/deploying/wsgi-standalone/#proxy-setups)
-
-.. code-block:: console
-
-    USE_PROXYFIX=true python index.py 8080
 
 Start the server to be used with a GitHub Enterprise instance.
 
