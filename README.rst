@@ -3,8 +3,6 @@ NOTE
 
 **Need Python3**
 
-***
-
 Flask webhook for Github
 ########################
 A very simple github post-receive web hook handler that executes per default a
