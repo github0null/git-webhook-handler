@@ -36,6 +36,28 @@ StandardError=syslog
 WantedBy=multi-user.target
 ```
 
+create a **/root/gitea_repos.json** to descrip hook content, like this:
+
+```json
+{
+    "razius/puppet": {
+        "path": "/home/puppet",
+        "key": "MyVerySecretKey",
+        "action": [
+            ["git", "pull", "origin", "master"]
+        ]
+    },
+    "d3non/somerandomexample/branch:live": {
+	    "path": "/home/exampleapp",
+        "key": "MyVerySecretKey",
+	    "action": [
+            ["git", "pull", "origin", "live"],
+		    ["echo", "execute", "some", "commands", "..."]
+        ]
+	}
+}
+```
+
 4. update service: run `systemctl daemon-reload`
 
 5. launch service: run `systemctl start giteawebhook`
