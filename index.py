@@ -73,10 +73,10 @@ def index():
                 # Check if POST request signature is valid
                 key = repo.get('key', None)
                 if key:
-                    signature = request.headers.get('X-Gitea-Signature').split('=')[1]
+                    signature = request.headers.get('X-Gitea-Signature')
                     if type(key) == str:
                         key = key.encode()
-                    mac = hmac.new(key, msg=request.data, digestmod=sha1)
+                    mac = hmac.new(key, msg=request.data, digestmod=sha256)
                     if not hmac.compare_digest(mac.hexdigest(), signature):
                         return 'error: check signature failed !', 403
 
