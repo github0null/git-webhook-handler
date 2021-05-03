@@ -9,7 +9,7 @@ import requests
 import ipaddress
 import hmac
 import traceback
-from hashlib import sha1
+from hashlib import sha1, sha256
 from flask import Flask, request, abort
 
 # Check if python version is less than 3
