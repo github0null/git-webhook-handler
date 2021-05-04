@@ -24,7 +24,7 @@ Wants=network.target
 [Service]
 WorkingDirectory=/root
 Environment="REPOS_JSON_PATH=/root/gitea_repos.json"
-ExecStart=/usr/bin/python3 /YOUR_PATH/gitea-webhook-handler/index.py 18541
+ExecStart=/usr/bin/python3 /YOUR/DOWNLOAD/PATH/gitea-webhook-handler/index.py 18541
 Restart=on-abnormal
 RestartSec=5s
 KillMode=mixed
@@ -48,11 +48,11 @@ create a **/root/gitea_repos.json** to descrip hook content, like this:
         ]
     },
     "d3non/somerandomexample/branch:live": {
-	    "path": "/home/exampleapp",
+        "path": "/home/exampleapp",
         "key": "MyVerySecretKey",
-	    "action": [
+        "action": [
             ["git", "pull", "origin", "live"],
-		    ["echo", "execute", "some", "commands", "..."]
+            ["echo", "execute", "some", "commands", "..."]
         ]
 	}
 }
