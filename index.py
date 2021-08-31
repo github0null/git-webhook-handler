@@ -87,7 +87,7 @@ def index():
                 for commit_inf in repo_meta['commits']:
                     shell_env['COMMIT_MSG'] = '"' + commit_inf['message'] + '"'
                     break
-            
+
             if repo.get('action', None):
                 command_cnt = 0
                 log_txt = [ '[{0}]\n'.format(repo_name) ]
