@@ -68,7 +68,7 @@ def index():
                 repo = repos.get(repo_name, None)
 
             if not repo:
-                return 'not found target repo ! [repo name]: {0}'.format(repo_name), 404
+                return 'not found target repo ! target_name: {0}, repo_list: {1}'.format(repo_name, repo.keys()), 404
 
             if repo.get('path', None):
                 # Check if POST request signature is valid
