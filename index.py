@@ -77,16 +77,15 @@ def index():
                     signature = request.headers.get('X-Gitea-Signature')
                     if type(key) == str:
                         key = key.encode()
-                    mac = hmac.new(key, msg=request.data, digestmod=sha256)
-                    hash_code = mac.hexdigest()
-                    if not hmac.compare_digest(hash_code, signature):
-                        return 'error: check "X-Gitea-Signature" failed !, sign: "{0}"'.format(hash_code), 403
+                    payload_sign = hmac.new(key, msg=request.data, digestmod=sha256).hexdigest()
+                    if not hmac.compare_digest(payload_sign, signature):
+                        return 'error: check "X-Gitea-Signature" failed !, key: "{0}", sign: "{1}"'.format(key, payload_sign), 403
 
             shell_env = os.environ.copy()
 
             if type(repo_meta['commits']) == list:
                 for commit_inf in repo_meta['commits']:
-                    shell_env['PUSH_MESG'] = '"' + commit_inf['message'] + '"'
+                    shell_env['COMMIT_MSG'] = '"' + commit_inf['message'] + '"'
                     break
 
             if repo.get('action', None):
