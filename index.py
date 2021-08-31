@@ -46,6 +46,7 @@ def index():
             repo_meta = {
                 'name': payload['repository']['name'],
                 'owner': payload['repository']['owner']['username'],
+                'commits': payload['commits'],
             }
 
             # repo name
@@ -80,11 +81,19 @@ def index():
                     if not hmac.compare_digest(mac.hexdigest(), signature):
                         return 'error: check signature failed !', 403
 
+            shell_env = os.environ.copy()
+
+            if type(repo_meta['commits']) == list:
+                for commit_inf in repo_meta['commits']:
+                    shell_env['PUSH_MESG'] = '"' + commit_inf['message'] + '"'
+                    break
+
             if repo.get('action', None):
                 log_txt = []
                 for action in repo['action']:
                     subp = subprocess.Popen(action, cwd=repo.get('path', '.'),
-                        stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding='utf8')
+                        stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding='utf8',
+                        env=shell_env)
                     stdout, stderr = subp.communicate()
                     log_txt.append('[{0}]\n{1}\n{2}'.format(repo_name, stdout, stderr))
                 return '\n\n'.join(log_txt)
