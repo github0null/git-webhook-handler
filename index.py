@@ -87,16 +87,18 @@ def index():
                 for commit_inf in repo_meta['commits']:
                     shell_env['COMMIT_MSG'] = '"' + commit_inf['message'] + '"'
                     break
-
+            
             if repo.get('action', None):
-                log_txt = []
+                command_cnt = 0
+                log_txt = [ '[{0}]\n'.format(repo_name) ]
                 for action in repo['action']:
+                    command_cnt += 1
                     subp = subprocess.Popen(action, cwd=repo.get('path', '.'),
                         stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding='utf8',
                         env=shell_env)
                     stdout, stderr = subp.communicate()
-                    log_txt.append('[{0}]\n{1}\n{2}'.format(repo_name, stdout, stderr))
-                return '\n\n'.join(log_txt)
+                    log_txt.append('--- task {0}\n{1}\n{2}\n'.format(command_cnt, stdout, stderr))
+                return '\n'.join(log_txt)
 
             return 'nothing to do !'
 
