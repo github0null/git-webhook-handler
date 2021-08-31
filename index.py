@@ -31,17 +31,19 @@ def index():
             return 'test ok !'
 
         elif request.method == 'POST':
-            # Store the IP address of the requester
-            request_ip = ipaddress.ip_address(u'{0}'.format(request.remote_addr))
 
-            if request.headers.get('X-GitHub-Event') == "ping":
+            req_type = request.headers.get('X-GitHub-Event')
+
+            if req_type == "ping":
                 return json.dumps({'msg': 'Hello, I received a ping !'})
 
-            if request.headers.get('X-GitHub-Event') != "push":
-                return json.dumps({'msg': "wrong event type"}), 403
+            if req_type != "push":
+                return json.dumps({'msg': "Wrong event type: '{0}'".format(req_type)}), 403
 
+            # parse local repos
             repos = json.loads(io.open(REPOS_JSON_PATH, 'r').read())
 
+            # parse payload
             payload = json.loads(request.data)
             repo_meta = {
                 'name': payload['repository']['name'],
