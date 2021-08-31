@@ -78,8 +78,9 @@ def index():
                     if type(key) == str:
                         key = key.encode()
                     mac = hmac.new(key, msg=request.data, digestmod=sha256)
-                    if not hmac.compare_digest(mac.hexdigest(), signature):
-                        return 'error: check "X-Gitea-Signature" failed !, sign: "{0}"'.format(signature), 403
+                    hash_code = mac.hexdigest()
+                    if not hmac.compare_digest(hash_code, signature):
+                        return 'error: check "X-Gitea-Signature" failed !, sign: "{0}"'.format(hash_code), 403
 
             shell_env = os.environ.copy()
 
