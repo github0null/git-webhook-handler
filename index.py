@@ -95,10 +95,14 @@ def index():
                 log_txt = [ '[{0}]\n'.format(repo_name) ]
                 for action in repo['action']:
                     command_cnt += 1
-                    subp = subprocess.Popen(action, cwd=repo.get('path', '.'),
-                        stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding='utf8',
-                        env=shell_env)
-                    stdout, stderr = subp.communicate()
+                    if type(action) == str:
+                        subp = subprocess.Popen(action, cwd=repo.get('path', '.'),
+                            stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding='utf8',
+                            env=shell_env, shell=True)
+                        stdout, stderr = subp.communicate()
+                    else:
+                        stdout = 'skip this action !'
+                        stderr = 'format error: "action" must be a string !'
                     log_txt.append('--- task {0}\n{1}\n{2}\n'.format(command_cnt, stdout, stderr))
                 return '\n'.join(log_txt)
 
