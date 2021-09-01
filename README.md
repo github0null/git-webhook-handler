@@ -55,7 +55,7 @@ create a **/root/gitea_repos.json** to descrip hook content, like this:
             "git pull origin live",
             "echo execute some commands ..."
         ]
-	}
+    }
 }
 ```
 
