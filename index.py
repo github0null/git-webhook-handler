@@ -101,8 +101,8 @@ def index():
                             env=shell_env, shell=True)
                         stdout, stderr = subp.communicate()
                     else:
-                        stdout = 'skip this action !'
-                        stderr = 'format error: "action" must be a string !'
+                        stdout = 'ignore this action: \'{}\' !'.format(action)
+                        stderr = 'format error: \'action\' must be a string !'
                     log_txt.append('--- task {0}\n{1}\n{2}\n'.format(command_cnt, stdout, stderr))
                 return '\n'.join(log_txt)
 
