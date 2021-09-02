@@ -17,7 +17,7 @@ A web hook handler for gitea/Github
 ```shell
 [Unit]
 Description=gitwebhook
-Documentation=https://git.github0null.io/root/gitea-webhook-handler
+Documentation=https://git.github0null.io/root/git-webhook-handler
 After=network.target
 Wants=network.target
 
@@ -25,7 +25,7 @@ Wants=network.target
 User=root
 WorkingDirectory=/root
 Environment="REPOS_JSON_PATH=/root/githook_repos.json"
-ExecStart=/usr/bin/python3 /YOUR/DOWNLOAD/PATH/gitea-webhook-handler/index.py 18541
+ExecStart=/usr/bin/python3 /YOUR_DOWNLOAD_PATH/git-webhook-handler/index.py 18541
 Restart=on-abnormal
 RestartSec=5s
 KillMode=mixed
