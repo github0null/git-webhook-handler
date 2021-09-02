@@ -24,7 +24,21 @@ app.debug = os.environ.get('DEBUG') == 'true'
 REPOS_JSON_PATH = os.environ['REPOS_JSON_PATH']
 
 @app.route("/", methods=['GET', 'POST'])
-def index():
+def index_1():
+    return main('gitea')
+
+@app.route("/github", methods=['GET', 'POST'])
+def index_2():
+    return main('github')
+
+def main(site_type: str):
+
+    x_event_name = 'X-Gitea-Event'
+    x_sign_name  = 'X-Gitea-Signature'
+
+    if site_type == 'github':
+        x_event_name = 'X-GitHub-Event'
+        x_sign_name  = 'X-Hub-Signature-256'
 
     try:
         if request.method == 'GET':
@@ -32,7 +46,7 @@ def index():
 
         elif request.method == 'POST':
 
-            req_type = request.headers.get('X-GitHub-Event')
+            req_type = request.headers.get(x_event_name)
 
             if req_type == "ping":
                 return json.dumps({'msg': 'Hello, I received a ping !'})
@@ -76,12 +90,14 @@ def index():
                 # Check if POST request signature is valid
                 key = repo.get('key', None)
                 if key:
-                    signature = request.headers.get('X-Gitea-Signature')
+                    signature = request.headers.get(x_sign_name)
+                    if (signature.startswith('sha256=')): # remove sha256 header for github
+                        signature = signature.replace('sha256=', '', 1)
                     if type(key) == str:
                         key = key.encode()
                     payload_sign = hmac.new(key, msg=request.data, digestmod=sha256).hexdigest()
                     if not hmac.compare_digest(payload_sign, signature):
-                        return 'error: check "X-Gitea-Signature" failed !, key: "{0}", sign: "{1}"'.format(key, payload_sign), 403
+                        return 'error: check "' + x_sign_name + '" failed !, key: "{0}", sign: "{1}"'.format(key, payload_sign), 403
 
             shell_env = os.environ.copy()
 
