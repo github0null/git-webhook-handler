@@ -55,6 +55,20 @@ create a **/root/githook_repos.json** to descrip hook content, like this:
             "git pull origin live",
             "echo execute some commands ..."
         ]
+    },
+    "d3non/somerandomexample/branch:master": {
+        "path": "/home/exampleapp",
+        "key": "123456789",
+        "action": [
+            {
+                "name": "update from remote ..."
+                "command": "git pull origin live"
+            },
+            {
+                "name": "execute some commands ...",
+                "command": "echo 'hello !'"
+            }
+        ]
     }
 }
 ```

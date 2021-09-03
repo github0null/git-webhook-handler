@@ -114,9 +114,9 @@ def index_gitea():
                                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding='utf8',
                                                 env=shell_env, shell=True)
                         stdout, stderr = subp.communicate()
-                    if type(action.get('cmd', None)) == str:
+                    elif type(action.get('command', None)) == str:
                         task_name = action.get('name', task_name)
-                        command = action.get('cmd', "echo 'empty command, nothing to do !'")
+                        command = action.get('command', "echo 'empty command, nothing to do !'")
                         subp = subprocess.Popen(command, cwd=repo.get('path', '.'),
                                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding='utf8',
                                                 env=shell_env, shell=True)
@@ -220,9 +220,9 @@ def index_github():
                                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding='utf8',
                                                 env=shell_env, shell=True)
                         stdout, stderr = subp.communicate()
-                    if type(action.get('cmd', None)) == str:
+                    elif type(action.get('command', None)) == str:
                         task_name = action.get('name', task_name)
-                        command = action.get('cmd', "echo 'empty command, nothing to do !'")
+                        command = action.get('command', "echo 'empty command, nothing to do !'")
                         subp = subprocess.Popen(command, cwd=repo.get('path', '.'),
                                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding='utf8',
                                                 env=shell_env, shell=True)
