@@ -116,6 +116,8 @@ def index_gitea():
                     else:
                         stdout = 'ignore this action: \'{}\' !'.format(action)
                         stderr = 'format error: \'action\' must be a string !'
+                    if stdout.strip() == '':
+                        stdout = 'done !'
                     log_txt.append('--- task {0}\n{1}\n{2}\n'.format(command_cnt, stdout, stderr))
                 return '\n'.join(log_txt)
 
@@ -212,6 +214,8 @@ def index_github():
                     else:
                         stdout = 'ignore this action: \'{}\' !'.format(action)
                         stderr = 'format error: \'action\' must be a string !'
+                    if stdout.strip() == '':
+                        stdout = 'done !'
                     log_txt.append('--- task {0}\n{1}\n{2}\n'.format(command_cnt, stdout, stderr))
                 return '\n'.join(log_txt)
 
