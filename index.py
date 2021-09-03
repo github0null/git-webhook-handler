@@ -108,17 +108,25 @@ def index_gitea():
                 log_txt = ['[{0}]\n'.format(repo_name)]
                 for action in repo['action']:
                     command_cnt += 1
+                    task_name = 'task {0}'.format(command_cnt)
                     if type(action) == str:
                         subp = subprocess.Popen(action, cwd=repo.get('path', '.'),
                                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding='utf8',
                                                 env=shell_env, shell=True)
                         stdout, stderr = subp.communicate()
+                    if type(action.get('cmd', None)) == str:
+                        task_name = action.get('name', task_name)
+                        command = action.get('cmd', "echo 'empty command, nothing to do !'")
+                        subp = subprocess.Popen(command, cwd=repo.get('path', '.'),
+                                                stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding='utf8',
+                                                env=shell_env, shell=True)
+                        stdout, stderr = subp.communicate()
                     else:
-                        stdout = 'ignore this action: \'{}\' !'.format(action)
-                        stderr = 'format error: \'action\' must be a string !'
+                        stdout = 'ignore this action: "{}" !'.format(action)
+                        stderr = 'format error: \'action\' must be a string or a valid object !'
                     if stdout.strip() == '':
                         stdout = 'done !'
-                    log_txt.append('--- task {0}\n{1}\n{2}\n'.format(command_cnt, stdout, stderr))
+                    log_txt.append('--- {0}\n{1}\n{2}\n'.format(task_name, stdout, stderr))
                 return '\n'.join(log_txt)
 
             return 'nothing to do !'
@@ -206,17 +214,25 @@ def index_github():
                 log_txt = ['[{0}]\n'.format(repo_name)]
                 for action in repo['action']:
                     command_cnt += 1
+                    task_name = 'task {0}'.format(command_cnt)
                     if type(action) == str:
                         subp = subprocess.Popen(action, cwd=repo.get('path', '.'),
                                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding='utf8',
                                                 env=shell_env, shell=True)
                         stdout, stderr = subp.communicate()
+                    if type(action.get('cmd', None)) == str:
+                        task_name = action.get('name', task_name)
+                        command = action.get('cmd', "echo 'empty command, nothing to do !'")
+                        subp = subprocess.Popen(command, cwd=repo.get('path', '.'),
+                                                stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding='utf8',
+                                                env=shell_env, shell=True)
+                        stdout, stderr = subp.communicate()
                     else:
-                        stdout = 'ignore this action: \'{}\' !'.format(action)
-                        stderr = 'format error: \'action\' must be a string !'
+                        stdout = 'ignore this action: "{}" !'.format(action)
+                        stderr = 'format error: \'action\' must be a string or a valid object !'
                     if stdout.strip() == '':
                         stdout = 'done !'
-                    log_txt.append('--- task {0}\n{1}\n{2}\n'.format(command_cnt, stdout, stderr))
+                    log_txt.append('--- {0}\n{1}\n{2}\n'.format(task_name, stdout, stderr))
                 return '\n'.join(log_txt)
 
             return 'nothing to do !'
