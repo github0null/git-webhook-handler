@@ -100,7 +100,7 @@ def index_gitea():
 
             if type(repo_meta['commits']) == list:
                 for commit_inf in repo_meta['commits']:
-                    shell_env['COMMIT_MSG'] = '"' + commit_inf['message'] + '"'
+                    shell_env['COMMIT_MSG'] = '"' + commit_inf['message'].rstrip('\r\n').rstrip('\n') + '"'
                     break
 
             if repo.get('action', None):
